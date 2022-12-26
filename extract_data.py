@@ -39,7 +39,7 @@ def save_mfcc(dataset_path, json_path, num_mfcc=13, n_fft=2048, hop_length=512, 
         if dirpath is not dataset_path:
 
             # save genre label (i.e., sub-folder name) in the mapping
-            semantic_label = dirpath.split("/")[-1]
+            semantic_label = dirpath.split(os.sep)[-1]
             data["mapping"].append(semantic_label)
             print("\nProcessing: {}".format(semantic_label))
 
@@ -70,7 +70,7 @@ def save_mfcc(dataset_path, json_path, num_mfcc=13, n_fft=2048, hop_length=512, 
     # save MFCCs to json file
     with open(json_path, "w") as fp:
         json.dump(data, fp, indent=4)
-        
-        
+
+
 if __name__ == "__main__":
     save_mfcc(DATASET_PATH, JSON_PATH, num_segments=10)
