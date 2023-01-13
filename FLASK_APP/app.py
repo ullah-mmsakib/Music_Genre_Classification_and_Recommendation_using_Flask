@@ -16,6 +16,7 @@ def index():
         file = request.files['file']
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
+            filename = "uploaded_music."+ filename.split(".")[-1]
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return render_template('index.html', music_file=filename)
     return render_template('index.html')
