@@ -1,19 +1,42 @@
-<!-- index.html -->
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Data Driven: Music Genre Classification & Recommendation</title>
-    </head>
-    <body>
-        <form method="POST" enctype="multipart/form-data">
-            <input type="file" name="file">
-            <input type="submit" value="Upload">
-        </form>
-        {% if music_file %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Driven: Music Genre Classification & Recommendation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}" />
+</head>
+<body>
+<div id="musicContainer">
+    <h1>Please Upload Your Music File</h1>
+    <form method="post" enctype="multipart/form-data">
+        <input type="file" name="file"/>
+        <br>
+        <input type="submit" id="submitButton" value="Find Genre"/>
+    </form>
+    <br>
+    {% if music_file %}
             <audio controls>
                 <source src="{{ url_for('static', filename='music/' + music_file) }}" type="audio/mpeg">
                 Your browser does not support the audio element.
             </audio>
-        {% endif %}
-    </body>
+    {% endif %}
+    <br>
+    {% if result != "" %}
+        <div id="genreContainer">
+            <h1>Your Music's Genre</h1>
+            <p id="genreText">{{ result }}</p>
+        </div>
+    {% endif %}
+    <br>
+    {% if recommendation != "" %}
+        <div id="genreContainer">
+            <h1>Some similar music you may like more:</h1>
+            <p id="genreText">{{ recommendation }}</p>
+        </div>
+    {% endif %}
+</div>
+
+</body>
 </html>
+
