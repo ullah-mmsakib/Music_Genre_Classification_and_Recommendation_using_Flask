@@ -15,7 +15,7 @@
 
 
   <!-- Bootstrap core CSS -->
-  <link href="{{url_for('static', filename='assets/dist/css/bootstrap.min.css')}}" rel="stylesheet">
+ <link href="{{url_for('static', filename='assets/dist/css/bootstrap.min.css')}}" rel="stylesheet">
 
   <style>
     .bd-placeholder-img {
@@ -62,7 +62,8 @@
       <div class="container">
         <a href="#" class="navbar-brand d-flex justify-content-between align-items-center ">
           <span class="material-symbols-outlined">
-            library_music
+           
+            <img src="static/logo.jpeg"  cursor: pointer; />
             </span>
           <strong class="p-2">Music Genre Classification</strong>
         </a>
@@ -79,7 +80,7 @@
     <section class="py-5 text-center container">
       <div class="row py-lg-4">
         <div class="col-lg-6 col-md-6 mx-auto">
-          <h1 class="fw-light">Upload Your Music File Here</h1>
+          <h1 class="fw-light">Upload Music File </h1>
           <p class="lead text-muted">Where every genre is a puzzle piece and we help you complete the picture</p>
 
           <form method="post" enctype="multipart/form-data">
@@ -135,15 +136,19 @@
             <thead>
               <tr>
 
-                <th scope="col">Song Name</th>
+                <th scope="col">Song's Title</th>
+                <th scope="col">Singer's Name</th>
                 <th scope="col">Song Link</th>
-              </tr>
+              </tr
+            
             </thead>
             <tbody>
               {% for value in recommendation %}
               <tr>
                 <td> {{ value['name'] }} </td>
-                <td>{{ value['url'] }} </td>
+                <td> {{ value['Artist Name'] }} </td>
+                <td> <a href="{{value['url']}}"> {{ value['url'] }}</a> </td> 
+                
               </tr>
               {% endfor %}
 

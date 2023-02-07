@@ -4,7 +4,7 @@ import os
 import pandas as pd
 import json
 import math
-import h5py
+import music_tag
 import secret
 import librosa
 import spotipy
@@ -18,7 +18,7 @@ from spotipy.oauth2 import SpotifyClientCredentials
 
 ## Parent directories
 MP3_PATH = "static/music/uploaded_music.mp3"
-WAVFILES_PATH = "static/music/wav"
+WAVFILES_PATH = "static\music\wav"
 JSON_PATH = "static/infeed_data.json"
 SAMPLE_RATE = 22050
 TRACK_DURATION = 30 # measured in seconds
@@ -27,7 +27,6 @@ INFEED_DATA_PATH = "static/infeed_data.json"
 MAPPING_DATA_PATH = "static/mappings.json"
 
 ## Load Model
-
 def load_model ():
     with open("static/model/trained_model.json", "r") as tm:
         model = model_from_json(tm.read())
@@ -39,7 +38,17 @@ def load_model ():
 ## Load External Music and save as .wav, then split.
 def load_external_audio(mp3_path):
     mp3_file = mp3_path
-    wav_file = "static/music/wav/uploaded_music.wav"
+    wav_file = "uploaded_music.wav"
+
+    # Delete everything from folder path if any files exists previously
+    folder_path = "static/music/wav"
+    for the_file in os.listdir(folder_path):
+        file_path = os.path.join(folder_path, the_file)
+        try:
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+        except Exception as e:
+            pass
 
     # Load the mp3 from the current directory and save the wav to current directory
     loaded_file = AudioSegment.from_mp3(mp3_file)
@@ -55,7 +64,7 @@ def load_external_audio(mp3_path):
         #print(i) # for debugging
         #print(clip_length)
         clipped_song = loaded_file[i:i+clip_length]
-        clipped_song.export(name[0] + "_" + str(clip_num) + "." + name[1], format="wav")
+        clipped_song.export("static/music/wav/" + name[0] + "_" + str(clip_num) + "." + name[1], format="wav")
         clip_num += 1
         #print(clip_num)
         if clip_num > expected_clips:
@@ -140,42 +149,47 @@ def predict_genre(infeed_data_path, mapping_data_path, model, num_model_iteratio
 
 ## Genre recommendation
 def recommend(genre):
+    sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id=secret.id, client_secret=secret.pswd))
+    
     song = []
     song_url = {}
     seed_genre = list()
+    seed_artist = list()
+    seed_track = list()
+
+    tags = music_tag.load_file(MP3_PATH)
+    artist_name = tags["artist"].value if "artist" in tags else ""
+    song_title = tags["title"].value if "title" in tags else ""
+
+    if artist_name:
+        search_result = sp.search(q=artist_name, limit = 1, type="artist")
+        for idx, track in enumerate(search_result["artists"]["items"]):
+            artist_id = search_result["artists"]["items"][idx]["id"]
+            seed_artist.append(artist_id)
+
+    if song_title:
+        search_result = sp.search(q=song_title, limit = 1, type="track")
+        for idx, track in enumerate(search_result["tracks"]["items"]):
+            track_id = search_result["tracks"]["items"][idx]["id"]
+            seed_track.append(track_id)
+
     if genre == "hiphop":
         seed_genre.append("hip-hop")
     else:
         seed_genre.append(genre)
-    sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id=secret.id, client_secret=secret.pswd))
-    recommendation = sp.recommendations(seed_genres = seed_genre, limit=5)
+
+    recommendation = sp.recommendations(seed_artists = seed_artist, seed_genres = seed_genre, seed_tracks = seed_track, limit=20)
 
     for track in recommendation["tracks"]:
-        song.append({"name": track["name"], "url" : track["external_urls"]["spotify"]})
-        # song_url.append(track["external_urls"]["spotify"])
-        # Convert lists to DataFrames
-        # df1 = pd.DataFrame(song_name, columns=['song_name'])
-        # df2 = pd.DataFrame(song_url, columns=['song_link'])
+        song.append({"name": track["name"],"Artist Name": track["artists"][0]["name"],  "url" : track["external_urls"]["spotify"]})
 
-        # Use the merge() function to merge the two DataFrames
-        # merged_df = pd.merge(df1, df2, left_index=True, right_index=True)
-        # recommendation = jsonify()
-
-   
     return song  
 
 
-
-## Main code
-model = load_model()
-optimiser = keras.optimizers.Adam(learning_rate=0.0001)
-
-
 ## Flask App from below
-
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/music'
-app.config['ALLOWED_EXTENSIONS'] = {'mp3', 'wav'}
+app.config['ALLOWED_EXTENSIONS'] = {'mp3'}
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -192,8 +206,10 @@ def index():
             filename = secure_filename(file.filename)
             filename = "uploaded_music."+ filename.split(".")[-1]
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            
         
+        ## Model related code starts from here:           
+        model = load_model()
+        optimiser = keras.optimizers.Adam(learning_rate=0.0001)
         model.compile(optimizer=optimiser, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
         num_clips = load_external_audio(MP3_PATH)
         num_iterations = generate_mfcc(WAVFILES_PATH, JSON_PATH, expected_clips=num_clips, num_segments=10)

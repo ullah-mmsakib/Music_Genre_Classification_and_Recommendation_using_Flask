@@ -1,3 +1,12 @@
-# music_genre_classification
-Extracted feature json file link:
-https://drive.google.com/drive/folders/1-oCbcNZ1shB0DtOSa9orREZR55-YLjx8?usp=share_link
+# Project Seminar: Data Science II
+## Music Genre Classification
+### By Group Data Driven
+
+##### Contributors
+- Md Shadman Hasan
+- M M Sakib Ullah
+- Sadia Sharmeen
+- Syed Maksud Hossain 
+- Injamamul Alam Noyon
+
+
