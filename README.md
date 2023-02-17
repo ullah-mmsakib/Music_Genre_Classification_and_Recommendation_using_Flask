@@ -1,8 +1,32 @@
 # Project Seminar: Data Science II
 ## Music Genre Classification
-### By Group Data Driven
+### By Group: <i>Data Driven</i>
+</br>
+</br>
 
-##### Contributors
+
+<b>Main Webpage of the App:</b>
+</br>
+<p align="center">
+  <img src="https://github.com/ullah-mmsakib/Music_Genre_Classification_and_Recommendation_using_Flask/blob/c0b8f125207c0e6d45f22e696826700d10c6b1c3/Raw%20codes/Analysis/startpage.png" alt="Main Page">
+</p>
+
+
+<b>Showing genre result after uploading a music:</b>
+</br>
+<p align="center">
+  <img src="https://github.com/ullah-mmsakib/Music_Genre_Classification_and_Recommendation_using_Flask/blob/c0b8f125207c0e6d45f22e696826700d10c6b1c3/Raw%20codes/Analysis/genre.png" alt="Showing genre">
+</p>
+
+
+<b>Recommending similar musics:</b>
+</br>
+<p align="center">
+  <img src="https://github.com/ullah-mmsakib/Music_Genre_Classification_and_Recommendation_using_Flask/blob/c0b8f125207c0e6d45f22e696826700d10c6b1c3/Raw%20codes/Analysis/recommendation.png" alt="Recommendation">
+</p>
+
+
+##### Contributors:
 - Md Shadman Hasan
 - M M Sakib Ullah
 - Sadia Sharmeen
