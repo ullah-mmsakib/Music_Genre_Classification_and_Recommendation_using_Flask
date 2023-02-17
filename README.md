@@ -1,9 +1,10 @@
-# Project Seminar: Data Science II
-## Music Genre Classification
+# Music Genre Classification and Recommendation
+## Project Seminar: Data Science II
 ### By Group: <i>Data Driven</i>
 </br>
 </br>
 <b>The current status of our project is as follows:</b>
+</br>
 </br>
 <b>Main webpage of the app:</b>
 </br>
