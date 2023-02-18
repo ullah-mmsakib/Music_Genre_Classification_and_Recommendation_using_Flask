@@ -1,5 +1,4 @@
 import os
-import h5py
 import json
 import math
 import secret
@@ -8,7 +7,7 @@ import spotipy
 import music_tag
 import statistics
 import numpy as np
-import tensorflow.keras as keras
+import keras
 from itertools import chain
 from pydub import AudioSegment
 from keras.models import model_from_json
